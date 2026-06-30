@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'data/*.mat'
-
+workflow_dispatch:
 jobs:
   analyze:
     runs-on: ubuntu-latest
