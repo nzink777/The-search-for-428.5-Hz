@@ -38,6 +38,6 @@ for filename in files:
         plt.xlim(23350, 23450) # TIGHT ZOOM on the carrier
         plt.axvline(x=23400 - 428.5, color='r', linestyle='--', label='428.5 Hz Sideband')
         plt.legend()
-      plt.savefig(os.path.join(results_dir, f"scan_{filename}.png"))
+        plt.savefig(os.path.join(results_dir, f"scan_{filename}.png"))
     plt.close()
     
