@@ -3,14 +3,14 @@ on:
   push:
     paths:
       - 'data/*.mat'
-workflow_dispatch:
+  workflow_dispatch:
 jobs:
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
       - name: Install dependencies
         run: pip install scipy numpy matplotlib
       - name: Run Hunt
