@@ -1,32 +1,32 @@
-import numpy as np
+import os
 import scipy.io
 import matplotlib.pyplot as plt
-import os
 
-def analyze_signal(mat_file_path, output_dir):
-    # Load .mat file
-    data = scipy.io.loadmat(mat_file_path)
-    # Extract time series (usually under 'data' or similar key)
-    # Assuming 'data' key exists; you may need to inspect the file structure
-    raw_signal = data['data'].flatten() 
-    
-    # 1. FFT Analysis
-    n = len(raw_signal)
-    sampling_rate = 100000 # Verify this in the .mat metadata
-    fft_data = np.fft.fft(raw_signal)
-    freqs = np.fft.fftfreq(n, d=1/sampling_rate)
-    
-    # 2. Focus on the 428.5 Hz sideband relative to DHO (23.4 kHz)
-    # We look for peaks at 23400 +/- 428.5
-    target_sideband = 23400 - 428.5
-    
-    # Generate visualization
-    plt.figure(figsize=(10, 6))
-    plt.magnitude_spectrum(raw_signal, Fs=sampling_rate, scale='dB')
-    plt.xlim(22000, 24000) # Zoom into DHO band
-    plt.title(f"Spectral Scan: {os.path.basename(mat_file_path)}")
-    plt.axvline(x=target_sideband, color='r', linestyle='--', label='Target 428.5 Hz Offset')
-    plt.savefig(os.path.join(output_dir, f"scan_{os.path.basename(mat_file_path)}.png"))
-    plt.close()
+# Ensure results directory exists
+results_dir = 'results'
+os.makedirs(results_dir, exist_ok=True)
 
-# Logic to loop through data/ directory
+data_dir = 'data'
+files = [f for f in os.listdir(data_dir) if f.endswith('.mat')]
+
+if not files:
+    print(f"Warning: No .mat files found in {data_dir}. Pipeline exiting.")
+    exit(0) # Exit cleanly, don't trigger an error
+
+for filename in files:
+    file_path = os.path.join(data_dir, filename)
+    print(f"Processing {filename}...")
+    
+    try:
+        data = scipy.io.loadmat(file_path)
+        # Check if 'data' key exists, if not, list available keys
+        if 'data' not in data:
+            print(f"Keys in {filename}: {list(data.keys())}")
+            continue
+            
+        raw_signal = data['data'].flatten()
+        # ... (rest of your FFT and plot logic)
+        plt.savefig(os.path.join(results_dir, f"scan_{filename}.png"))
+        plt.close()
+    except Exception as e:
+        print(f"Failed to process {filename}: {e}")
