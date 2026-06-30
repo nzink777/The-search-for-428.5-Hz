@@ -1,8 +1,8 @@
 name: The Fox Hunt
 on:
   push:
-    paths:
-      - 'data/*.mat'
+    paths-ignore:
+      - 'results/**'
   workflow_dispatch:
 jobs:
   analyze:
