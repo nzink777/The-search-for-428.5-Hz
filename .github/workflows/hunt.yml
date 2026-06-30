@@ -1,4 +1,7 @@
 name: The Fox Hunt
+# Add this block at the top level of your YAML
+permissions:
+  contents: write
 on:
   push:
     paths-ignore:
