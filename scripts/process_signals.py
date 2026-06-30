@@ -25,11 +25,19 @@ for filename in files:
     else:
         # It's Amplitude Data: Plot Spectrum
         print(f"{filename} detected as AMPLITUDE data. Plotting FFT.")
-        plt.magnitude_spectrum(raw_signal, Fs=100000, scale='dB')
+         # ... inside the Amplitude plotting block ...
+        
+        # Apply a Hanning Window to reduce spectral leakage
+        windowed_signal = raw_signal * np.hanning(len(raw_signal))
+        
+        # Plot the FFT with the windowed signal
+        # We increase the nfft to get higher frequency resolution
+        plt.magnitude_spectrum(windowed_signal, Fs=100000, scale='dB', NFFT=4096)
+        
         plt.title(f"Spectral Scan (Amplitude): {filename}")
-        plt.xlim(22000, 24000) # Zoom into DHO band
+        plt.xlim(23350, 23450) # TIGHT ZOOM on the carrier
         plt.axvline(x=23400 - 428.5, color='r', linestyle='--', label='428.5 Hz Sideband')
-
-    plt.savefig(os.path.join(results_dir, f"scan_{filename}.png"))
+        plt.legend()
+      plt.savefig(os.path.join(results_dir, f"scan_{filename}.png"))
     plt.close()
     
